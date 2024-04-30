@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.jsnu.dao.BookDao">
+    <select id="findBookRows" resultType="Integer">
+        select count(*) from book
+        <where>
+            <if test="keyword != null and keyword != ''">
+                name like '%' #{keyword} '%' or
+                author like '%' #{keyword} '%' or
+                publish like '%' #{keyword} '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findBookList" resultType="book">
+        select * from book
+        <where>
+            <if test="keyword != null and keyword != ''">
+                name like '%'#{keyword}'%' or
+                author like '%'#{keyword}'%' or
+                publish like '%'#{keyword}'%'
+            </if>
+        </where>
+        limit #{begin}, #{pageSize}
+    </select>
+
+    <delete id="delBookById">
+        delete from book where id = #{bookId}
+    </delete>
+
+    <select id="findBookById" resultType="book">
+        select * from book where id = #{id}
+    </select>
+
+    <update id="updateBookById">
+        update book  set
+                         author=#{bk.author},isbn=#{bk.isbn},
+                         name=#{bk.name},pages=#{bk.pages},
+                         price=#{bk.price},publish=#{bk.publish},
+                         publish_time=#{bk.publish_time},
+                         size=#{bk.size},translate=#{bk.translate},
+                         type=#{bk.type}
+        where id=#{bk.id}
+    </update>
+
+    <insert id="addBook" parameterType="Book">
+        insert into book(id,author,isbn,name,pages,price,
+                         publish,publish_time,size,translate,type)
+        values(null,#{bk.author},#{bk.isbn},#{bk.name},
+               #{bk.pages},#{bk.price},#{bk.publish},
+               #{bk.publish_time},#{bk.size},#{bk.translate},
+               #{bk.type})
+    </insert>
+</mapper>

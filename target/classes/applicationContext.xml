@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <context:property-placeholder
+        location="classpath:jdbc.properties"/>
+    <context:component-scan
+            base-package="cn.edu.jsnu.controller"/>
+    <bean id="myDataSource"
+          class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <bean id="sqlSessionFactory"
+          class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="myDataSource"/>
+        <property name="configLocation"
+                  value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <context:component-scan
+            base-package="cn.edu.jsnu.service"/>
+
+    <context:component-scan
+            base-package="cn.edu.jsnu.controller"/>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName"
+                  value="sqlSessionFactory"/>
+        <property name="basePackage"
+                  value="cn.edu.jsnu.dao"/>
+    </bean>
+
+<!--   <mvc:interceptors>-->
+<!--        <mvc:interceptor>-->
+<!--            <mvc:mapping path="/**/"/>-->
+<!--            <mvc:exclude-mapping path="/login/toLogin.do"/>-->
+<!--            <mvc:exclude-mapping path="/login/checkCode/do"/>-->
+<!--            <mvc:exclude-mapping path="/login/login.do"/>-->
+<!--            <bean class="cn.edu.jsnu.util.LoginInterceptor"/>-->
+<!--        </mvc:interceptor>-->
+<!--    </mvc:interceptors>-->
+
+</beans>
